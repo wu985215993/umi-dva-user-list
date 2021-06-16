@@ -3,7 +3,7 @@ import { Reducer } from 'redux';
 import { getRemoteList } from '../service.ts';
 interface UserModelType {
   namespace: 'users';
-  state: {};
+  state: [];
   reducers: { getList: Reducer };
   effects: {
     getRemote: Effect;
@@ -14,7 +14,7 @@ interface UserModelType {
 }
 const UserModel: UserModelType = {
   namespace: 'users',
-  state: {},
+  state: [],
   reducers: {
     getList(state, { payload }) {
       return payload;
@@ -23,8 +23,6 @@ const UserModel: UserModelType = {
   effects: {
     *getRemote(action, { put, call }) {
       const data = yield call(getRemoteList);
-      console.log(data);
-
       yield put({
         type: 'getList',
         payload: data,

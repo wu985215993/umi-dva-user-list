@@ -1,7 +1,9 @@
-import React from 'react';
-import { Table, Tag } from 'antd';
+import React, { useState } from 'react';
+import { Table } from 'antd';
 import { connect } from 'react-redux';
+import UserModal from './components/UserModal.tsx';
 function index({ users }) {
+  const [modalVisible, setMoalVisible] = useState(false);
   const columns = [
     {
       title: 'ID',
@@ -23,16 +25,20 @@ function index({ users }) {
       key: 'action',
       render: (text, record) => (
         <span>
-          <a>Edit</a>&nbsp;&nbsp;&nbsp;&nbsp;
+          <a onClick={visibleHandler}>Edit</a>
+          &nbsp;&nbsp;&nbsp;&nbsp;
           <a>Delete</a>
         </span>
       ),
     },
   ];
-  console.log(users.data);
+  const visibleHandler = () => {
+    setMoalVisible(true);
+  };
   return (
     <div className={'list-table'}>
       <Table columns={columns} dataSource={users.data} />
+      <UserModal visible={modalVisible} />
     </div>
   );
 }
