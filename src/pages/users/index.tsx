@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import UserModal from './components/UserModal.tsx';
 function index({ users }) {
   const [modalVisible, setMoalVisible] = useState(false);
+  const [record, setrecord] = useState(undefined);
   const columns = [
     {
       title: 'ID',
@@ -25,20 +26,24 @@ function index({ users }) {
       key: 'action',
       render: (text, record) => (
         <span>
-          <a onClick={visibleHandler}>Edit</a>
+          <a onClick={() => editHandler(record)}>Edit</a>
           &nbsp;&nbsp;&nbsp;&nbsp;
           <a>Delete</a>
         </span>
       ),
     },
   ];
-  const visibleHandler = () => {
+  const editHandler = record => {
     setMoalVisible(true);
+    setrecord(record);
+  };
+  const closeHandler = () => {
+    setMoalVisible(false);
   };
   return (
     <div className={'list-table'}>
       <Table columns={columns} dataSource={users.data} />
-      <UserModal visible={modalVisible} />
+      <UserModal visible={modalVisible} closeHandler={closeHandler} record={record} />
     </div>
   );
 }
