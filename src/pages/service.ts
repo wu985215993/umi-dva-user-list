@@ -1,7 +1,7 @@
 import request from 'umi-request';
 
 export const getRemoteList = async () => {
-  return request('http://public-api-v1.aspirantzhang.com/users', {
+  return request('/api/users', {
     method: 'get',
   })
     .then(response => response)
