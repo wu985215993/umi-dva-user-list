@@ -4,55 +4,35 @@ import { connect } from 'react-redux';
 function index({ users }) {
   const columns = [
     {
+      title: 'ID',
+      dataIndex: 'id',
+      key: 'id',
+    },
+    {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
-      render: text => <a>{text}</a>,
     },
     {
-      title: 'Age',
-      dataIndex: 'age',
-      key: 'age',
-    },
-    {
-      title: 'Address',
-      dataIndex: 'address',
-      key: 'address',
-    },
-    {
-      title: 'Tags',
-      key: 'tags',
-      dataIndex: 'tags',
-      render: tags => (
-        <>
-          {tags.map(tag => {
-            let color = tag.length > 5 ? 'geekblue' : 'green';
-            if (tag === 'loser') {
-              color = 'volcano';
-            }
-            return (
-              <Tag color={color} key={tag}>
-                {tag.toUpperCase()}
-              </Tag>
-            );
-          })}
-        </>
-      ),
+      title: 'Create_time',
+      dataIndex: 'create_time',
+      key: 'create_time',
     },
     {
       title: 'Action',
       key: 'action',
       render: (text, record) => (
         <span>
-          <a style={{ marginRight: 16 }}>Invite {record.name}</a>
+          <a>Edit</a>&nbsp;&nbsp;&nbsp;&nbsp;
           <a>Delete</a>
         </span>
       ),
     },
   ];
+  console.log(users.data);
   return (
     <div className={'list-table'}>
-      <Table columns={columns} dataSource={users} />
+      <Table columns={columns} dataSource={users.data} />
     </div>
   );
 }
