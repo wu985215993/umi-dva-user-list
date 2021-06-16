@@ -1,5 +1,5 @@
 import { Effect, Subscription } from 'dva';
-import { Reducer } from 'react';
+import { Reducer } from 'redux';
 interface UserModelType {
   namespace: 'users';
   state: {};
