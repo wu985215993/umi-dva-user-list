@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Table } from 'antd';
 import { connect } from 'react-redux';
 import UserModal from './components/UserModal.tsx';
-function index({ users }) {
+function index({ users, dispatch }) {
   const [modalVisible, setMoalVisible] = useState(false);
   const [record, setRecord] = useState(undefined);
   const columns = [
@@ -40,10 +40,22 @@ function index({ users }) {
   const closeHandler = () => {
     setMoalVisible(false);
   };
+  const onFinish = values => {
+    const id = record.id;
+    dispatch({
+      type: 'users/edit',
+      payload: { id, values },
+    });
+  };
   return (
     <div className={'list-table'}>
       <Table columns={columns} dataSource={users.data} rowKey="id" />
-      <UserModal visible={modalVisible} closeHandler={closeHandler} record={record} />
+      <UserModal
+        visible={modalVisible}
+        closeHandler={closeHandler}
+        record={record}
+        onFinish={onFinish}
+      />
     </div>
   );
 }
