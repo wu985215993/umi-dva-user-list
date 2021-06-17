@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import UserModal from './components/UserModal.tsx';
 function index({ users }) {
   const [modalVisible, setMoalVisible] = useState(false);
-  const [record, setrecord] = useState(undefined);
+  const [record, setRecord] = useState(undefined);
   const columns = [
     {
       title: 'ID',
@@ -35,14 +35,14 @@ function index({ users }) {
   ];
   const editHandler = record => {
     setMoalVisible(true);
-    setrecord(record);
+    setRecord(record);
   };
   const closeHandler = () => {
     setMoalVisible(false);
   };
   return (
     <div className={'list-table'}>
-      <Table columns={columns} dataSource={users.data} />
+      <Table columns={columns} dataSource={users.data} rowKey="id" />
       <UserModal visible={modalVisible} closeHandler={closeHandler} record={record} />
     </div>
   );
