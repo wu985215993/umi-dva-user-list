@@ -1,19 +1,11 @@
 import { message } from 'antd';
 import { Effect, Subscription } from 'dva';
 import { Reducer } from 'redux';
-import { deleteRecored, editRecord, getRemoteList, addRecored } from '../service';
+import { deleteRecored, editRecord, getRemoteList, addRecored } from './service';
+import { SingleUserType } from './data';
 
-//每条用户数据的接口类型
-interface SingleUserType {
-  id: number;
-  name: string;
-  email: string;
-  create_time: string;
-  update_time: string;
-  status: number;
-}
 //后端返回数据的接口类型
-interface UserState {
+export interface UserState {
   data: SingleUserType[];
   meta: {
     total: number;

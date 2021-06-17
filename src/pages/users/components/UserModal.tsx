@@ -1,7 +1,15 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, FC } from 'react';
 import { Modal, Form, Input } from 'antd';
+import { SingleUserType, FormValues } from '../data';
 
-export default function UserModal({ visible, closeHandler, record, onFinish }) {
+interface UserModalProps {
+  visible: boolean;
+  closeHandler: () => void;
+  record: SingleUserType | undefined;
+  onFinish: (values: FormValues) => void;
+}
+
+const UserModal: FC<UserModalProps> = ({ visible, closeHandler, record, onFinish }) => {
   const [form] = Form.useForm();
   useEffect(() => {
     if (record === undefined) {
@@ -35,4 +43,5 @@ export default function UserModal({ visible, closeHandler, record, onFinish }) {
       </Modal>
     </div>
   );
-}
+};
+export default UserModal;

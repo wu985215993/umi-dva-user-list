@@ -1,10 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, FC } from 'react';
 import { Table, Button, Popconfirm } from 'antd';
-import { connect } from 'react-redux';
-import UserModal from './components/UserModal.tsx';
-function index({ users, dispatch, userListLoading }) {
+import { Dispatch, connect } from 'dva';
+import UserModal from './components/UserModal';
+import { UserState } from './model';
+import { SingleUserType, FormValues } from './data';
+
+interface UserPageProps {
+  users: UserState;
+  dispatch: Dispatch;
+  userListLoading: Boolean;
+}
+const UserListPage: FC<UserPageProps> = ({ users, dispatch, userListLoading }) => {
   const [modalVisible, setMoalVisible] = useState(false);
-  const [record, setRecord] = useState(undefined);
+  const [record, setRecord] = useState<SingleUserType | undefined>(undefined);
   const columns = [
     {
       title: 'ID',
@@ -15,6 +23,7 @@ function index({ users, dispatch, userListLoading }) {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
+      render: (text: string) => <a>{text}</a>,
     },
     {
       title: 'Create_time',
@@ -24,7 +33,7 @@ function index({ users, dispatch, userListLoading }) {
     {
       title: 'Action',
       key: 'action',
-      render: (text, record) => (
+      render: (text: string, record: SingleUserType) => (
         <span>
           <a onClick={() => editHandler(record)}>Edit</a>
           &nbsp;&nbsp;&nbsp;&nbsp;
@@ -42,11 +51,11 @@ function index({ users, dispatch, userListLoading }) {
       ),
     },
   ];
-  const editHandler = record => {
+  const editHandler = (record: SingleUserType) => {
     setMoalVisible(true);
     setRecord(record);
   };
-  const deleteHandler = id => {
+  const deleteHandler = (id: number) => {
     dispatch({
       type: 'users/delete',
       payload: {
@@ -57,7 +66,7 @@ function index({ users, dispatch, userListLoading }) {
   const closeHandler = () => {
     setMoalVisible(false);
   };
-  const onFinish = values => {
+  const onFinish = (values: FormValues) => {
     let id = 0;
     if (record) {
       id = record.id;
@@ -92,11 +101,11 @@ function index({ users, dispatch, userListLoading }) {
       />
     </div>
   );
-}
-const mapStateToProps = ({ users, loading }) => {
+};
+const mapStateToProps = ({ users, loading }: { users: UserState; loading: Loading }) => {
   return {
     users,
     userListLoading: loading.models.users,
   };
 };
-export default connect(mapStateToProps)(index);
+export default connect(mapStateToProps)(UserListPage);
