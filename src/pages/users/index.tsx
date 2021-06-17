@@ -1,11 +1,11 @@
 import React, { useState, FC, useRef } from 'react';
-import { Table, Button, Popconfirm, Pagination } from 'antd';
+import { Table, Button, Popconfirm, Pagination, message } from 'antd';
 import ProTable, { ProColumns, TableDropdown } from '@ant-design/pro-table';
 import { Dispatch, connect } from 'dva';
 import UserModal from './components/UserModal';
 import { UserState } from './model';
 import { SingleUserType, FormValues } from './data';
-import { getRemoteList } from './service';
+import { addRecored, editRecord } from './service';
 interface ActionType {
   reload: (resetPageIndex?: boolean) => void;
   reloadAndRest: () => void;
@@ -20,6 +20,7 @@ interface UserPageProps {
 const UserListPage: FC<UserPageProps> = ({ users, dispatch, userListLoading }) => {
   const [modalVisible, setMoalVisible] = useState(false);
   const [record, setRecord] = useState<SingleUserType | undefined>(undefined);
+  const [confirmLoading, setConfirmLoading] = useState(false);
   const ref = useRef<ActionType>();
   const columns = [
     {
@@ -74,21 +75,39 @@ const UserListPage: FC<UserPageProps> = ({ users, dispatch, userListLoading }) =
   const closeHandler = () => {
     setMoalVisible(false);
   };
-  const onFinish = (values: FormValues) => {
+  const onFinish = async (values: FormValues) => {
+    //提交的时候让
+    setConfirmLoading(true);
+    //让提交表单的操作得到控住 防止服务器错误也会关闭模态框
     let id = 0;
     if (record) {
       id = record.id;
-      dispatch({
-        type: 'users/edit',
-        payload: { id, values },
-      });
-      setMoalVisible(false);
+    }
+    let serviceFun;
+
+    if (id) {
+      serviceFun = editRecord;
     } else {
-      dispatch({
-        type: 'users/add',
-        payload: { values },
-      });
+      serviceFun = addRecored;
+    }
+    const result = await serviceFun({
+      id,
+      values,
+    });
+    if (result) {
       setMoalVisible(false);
+      message.success(`${id === 0 ? 'Add' : 'Edit'} success`);
+      dispatch({
+        type: 'users/getRemote',
+        payload: {
+          page: users.meta.page,
+          per_page: users.meta.per_page,
+        },
+      });
+    } else {
+      setConfirmLoading(true);
+
+      message.error(`${id === 0 ? 'Add' : 'Edit'} failed`);
     }
   };
   const addHandler = () => {
@@ -148,6 +167,7 @@ const UserListPage: FC<UserPageProps> = ({ users, dispatch, userListLoading }) =
         closeHandler={closeHandler}
         record={record}
         onFinish={onFinish}
+        confirmLoading={confirmLoading}
       />
     </div>
   );

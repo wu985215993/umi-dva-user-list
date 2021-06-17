@@ -9,7 +9,13 @@ interface UserModalProps {
   onFinish: (values: FormValues) => void;
 }
 
-const UserModal: FC<UserModalProps> = ({ visible, closeHandler, record, onFinish }) => {
+const UserModal: FC<UserModalProps> = ({
+  visible,
+  closeHandler,
+  record,
+  onFinish,
+  confirmLoading,
+}) => {
   const [form] = Form.useForm();
   useEffect(() => {
     if (record === undefined) {
@@ -25,7 +31,14 @@ const UserModal: FC<UserModalProps> = ({ visible, closeHandler, record, onFinish
 
   return (
     <div>
-      <Modal title="Basic Modal" visible={visible} onOk={onOk} onCancel={closeHandler} forceRender>
+      <Modal
+        title="Basic Modal"
+        visible={visible}
+        onOk={onOk}
+        onCancel={closeHandler}
+        forceRender
+        confirmLoading={confirmLoading}
+      >
         <Form name="basic" form={form} onFinish={onFinish}>
           <Form.Item label="Name" name="name">
             <Input />
