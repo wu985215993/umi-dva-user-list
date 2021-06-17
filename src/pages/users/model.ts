@@ -108,9 +108,13 @@ const UserModel: UserModelType = {
     setup({ dispatch, history }) {
       return history.listen(({ pathname }) => {
         if (pathname === '/users') {
-          /* dispatch({
+          dispatch({
             type: 'getRemote',
-          }); */
+            payload: {
+              page: 1,
+              per_page: 5,
+            },
+          });
         }
       });
     },

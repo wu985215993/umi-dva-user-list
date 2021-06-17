@@ -1,5 +1,5 @@
 import React, { useState, FC, useRef } from 'react';
-import { Table, Button, Popconfirm } from 'antd';
+import { Table, Button, Popconfirm, Pagination } from 'antd';
 import ProTable, { ProColumns, TableDropdown } from '@ant-design/pro-table';
 import { Dispatch, connect } from 'dva';
 import UserModal from './components/UserModal';
@@ -95,20 +95,28 @@ const UserListPage: FC<UserPageProps> = ({ users, dispatch, userListLoading }) =
     setMoalVisible(true);
     setRecord(undefined);
   };
-  const requestHandler = async ({ pageSize, current }) => {
-    //现在这个方法执行是在reducer之后了 教程中存在问题 我没遇到 解决办法在这里获取一下数据使用getRemostList
-    const users = await getRemoteList({
-      page: current,
-      per_page: pageSize,
-    });
-    return {
-      data: users.data,
-      success: true,
-      total: users.meta.total,
-    };
-  };
+
   const reloadHandler = () => {
     ref.current.reload();
+  };
+
+  const paginationHandler = (page, pageSize) => {
+    dispatch({
+      type: 'users/getRemote',
+      payload: {
+        page,
+        per_page: pageSize,
+      },
+    });
+  };
+  const pageSizeHandler = (current, size) => {
+    dispatch({
+      type: 'users/getRemote',
+      payload: {
+        page: current,
+        per_page: size,
+      },
+    });
   };
   return (
     <div className={'list-table'}>
@@ -118,12 +126,22 @@ const UserListPage: FC<UserPageProps> = ({ users, dispatch, userListLoading }) =
       <Button onClick={reloadHandler}>Reload</Button>
       <ProTable
         columns={columns}
-        // dataSource={users.data}
+        dataSource={users.data}
         rowKey="id"
         loading={userListLoading}
-        request={requestHandler}
         search={false}
         actionRef={ref}
+        pagination={false}
+      />
+      <Pagination
+        total={users.meta.total}
+        onChange={paginationHandler}
+        onShowSizeChange={pageSizeHandler}
+        current={users.meta.page}
+        pageSize={users.meta.per_page}
+        showSizeChanger
+        showQuickJumper
+        showTotal={total => `Total ${total} items`}
       />
       <UserModal
         visible={modalVisible}
