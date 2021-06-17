@@ -1,6 +1,6 @@
 import { Effect, Subscription } from 'dva';
 import { Reducer } from 'redux';
-import { editRecord, getRemoteList } from '../service';
+import { deleteRecored, editRecord, getRemoteList, addRecored } from '../service';
 interface UserModelType {
   namespace: 'users';
   state: [];
@@ -8,6 +8,8 @@ interface UserModelType {
   effects: {
     getRemote: Effect;
     edit: Effect;
+    delete: Effect;
+    add: Effect;
   };
   subscriptions: {
     setup: Subscription;
@@ -31,7 +33,21 @@ const UserModel: UserModelType = {
     },
     *edit({ payload: { id, values } }, { put, call }) {
       const data = yield call(editRecord, { id, values });
-      console.log(data);
+      yield put({
+        type: 'getRemote',
+      });
+    },
+    *delete({ payload: { id } }, { put, call }) {
+      const data = yield call(deleteRecored, { id });
+      yield put({
+        type: 'getRemote',
+      });
+    },
+    *add({ payload: { values } }, { put, call }) {
+      const data = yield call(addRecored, { values });
+      yield put({
+        type: 'getRemote',
+      });
     },
   },
   subscriptions: {

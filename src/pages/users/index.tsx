@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Table } from 'antd';
+import { Table, Button, Popconfirm } from 'antd';
 import { connect } from 'react-redux';
 import UserModal from './components/UserModal.tsx';
 function index({ users, dispatch }) {
@@ -28,7 +28,16 @@ function index({ users, dispatch }) {
         <span>
           <a onClick={() => editHandler(record)}>Edit</a>
           &nbsp;&nbsp;&nbsp;&nbsp;
-          <a>Delete</a>
+          <Popconfirm
+            title="Are you sure delete this user?"
+            onConfirm={() => {
+              deleteHandler(record.id);
+            }}
+            okText="Yes"
+            cancelText="No"
+          >
+            <a>Delete</a>
+          </Popconfirm>
         </span>
       ),
     },
@@ -37,18 +46,43 @@ function index({ users, dispatch }) {
     setMoalVisible(true);
     setRecord(record);
   };
+  const deleteHandler = id => {
+    dispatch({
+      type: 'users/delete',
+      payload: {
+        id,
+      },
+    });
+  };
   const closeHandler = () => {
     setMoalVisible(false);
   };
   const onFinish = values => {
-    const id = record.id;
-    dispatch({
-      type: 'users/edit',
-      payload: { id, values },
-    });
+    let id = 0;
+    if (record) {
+      id = record.id;
+      dispatch({
+        type: 'users/edit',
+        payload: { id, values },
+      });
+      setMoalVisible(false);
+    } else {
+      dispatch({
+        type: 'users/add',
+        payload: { values },
+      });
+      setMoalVisible(false);
+    }
+  };
+  const addHandler = () => {
+    setMoalVisible(true);
+    setRecord(undefined);
   };
   return (
     <div className={'list-table'}>
+      <Button type="primary" onClick={addHandler}>
+        Add
+      </Button>
       <Table columns={columns} dataSource={users.data} rowKey="id" />
       <UserModal
         visible={modalVisible}

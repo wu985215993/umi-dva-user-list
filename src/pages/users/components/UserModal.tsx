@@ -4,7 +4,11 @@ import { Modal, Form, Input } from 'antd';
 export default function UserModal({ visible, closeHandler, record, onFinish }) {
   const [form] = Form.useForm();
   useEffect(() => {
-    form.setFieldsValue(record);
+    if (record === undefined) {
+      form.resetFields();
+    } else {
+      form.setFieldsValue(record);
+    }
   }, [form, record, visible]);
 
   const onOk = () => {
