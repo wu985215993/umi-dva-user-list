@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@ant-design/codemod-v4": "^1.1.0",
+    "@ant-design/pro-table": "^2.42.0",
     "antd": "^4.16.3",
     "dva": "^2.6.0-beta.6",
     "react": "^16.8.6",

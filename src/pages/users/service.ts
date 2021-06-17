@@ -22,10 +22,13 @@ const errorHandler = function(error: any) {
 
 const extendRequest = extend({ errorHandler });
 
-export const getRemoteList = async () => {
-  return extendRequest('http://public-api-v1.aspirantzhang.com/users', {
-    method: 'get',
-  })
+export const getRemoteList = async ({ page, per_page }) => {
+  return extendRequest(
+    `http://public-api-v1.aspirantzhang.com/users?page=${page}&per_page=${per_page}`,
+    {
+      method: 'get',
+    },
+  )
     .then(response => response)
     .catch(error => {
       return false;

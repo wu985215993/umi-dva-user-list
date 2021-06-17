@@ -44,8 +44,8 @@ const UserModel: UserModelType = {
     },
   },
   effects: {
-    *getRemote(action, { put, call }) {
-      const data = yield call(getRemoteList);
+    *getRemote({ payload: { page, per_page } }, { put, call }) {
+      const data = yield call(getRemoteList, { page, per_page });
       if (data) {
         yield put({
           type: 'getList',
@@ -53,34 +53,51 @@ const UserModel: UserModelType = {
         });
       }
     },
-    *edit({ payload: { id, values } }, { put, call }) {
+    *edit({ payload: { id, values } }, { put, call, select }) {
       const data = yield call(editRecord, { id, values });
       if (data) {
         message.success('Edit success');
+        const { page, per_page } = yield select(state => state.users.meta);
         yield put({
           type: 'getRemote',
+          payload: {
+            page,
+            per_page,
+          },
         });
       } else {
         message.error('Edit failed');
       }
     },
-    *delete({ payload: { id } }, { put, call }) {
+    *delete({ payload: { id } }, { put, call, select }) {
       const data = yield call(deleteRecored, { id });
       if (data) {
         message.success('Delete success');
+        const { page, per_page } = yield select(state => state.users.meta);
+        console.log(page, per_page);
+
         yield put({
           type: 'getRemote',
+          payload: {
+            page,
+            per_page,
+          },
         });
       } else {
         message.error('Delete failed');
       }
     },
-    *add({ payload: { values } }, { put, call }) {
+    *add({ payload: { values } }, { put, call, select }) {
       const data = yield call(addRecored, { values });
+      const { page, per_page } = yield select(state => state.users.meta);
       if (data) {
         message.success('Add success');
         yield put({
           type: 'getRemote',
+          payload: {
+            page,
+            per_page,
+          },
         });
       } else {
         message.error('Add failed');
@@ -91,9 +108,9 @@ const UserModel: UserModelType = {
     setup({ dispatch, history }) {
       return history.listen(({ pathname }) => {
         if (pathname === '/users') {
-          dispatch({
+          /* dispatch({
             type: 'getRemote',
-          });
+          }); */
         }
       });
     },
