@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Table, Button, Popconfirm } from 'antd';
 import { connect } from 'react-redux';
 import UserModal from './components/UserModal.tsx';
-function index({ users, dispatch }) {
+function index({ users, dispatch, userListLoading }) {
   const [modalVisible, setMoalVisible] = useState(false);
   const [record, setRecord] = useState(undefined);
   const columns = [
@@ -83,7 +83,7 @@ function index({ users, dispatch }) {
       <Button type="primary" onClick={addHandler}>
         Add
       </Button>
-      <Table columns={columns} dataSource={users.data} rowKey="id" />
+      <Table columns={columns} dataSource={users.data} rowKey="id" loading={userListLoading} />
       <UserModal
         visible={modalVisible}
         closeHandler={closeHandler}
@@ -93,9 +93,10 @@ function index({ users, dispatch }) {
     </div>
   );
 }
-const mapStateToProps = ({ users }) => {
+const mapStateToProps = ({ users, loading }) => {
   return {
     users,
+    userListLoading: loading.models.users,
   };
 };
 export default connect(mapStateToProps)(index);

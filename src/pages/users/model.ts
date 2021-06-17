@@ -1,3 +1,4 @@
+import { message } from 'antd';
 import { Effect, Subscription } from 'dva';
 import { Reducer } from 'redux';
 import { deleteRecored, editRecord, getRemoteList, addRecored } from '../service';
@@ -26,28 +27,45 @@ const UserModel: UserModelType = {
   effects: {
     *getRemote(action, { put, call }) {
       const data = yield call(getRemoteList);
-      yield put({
-        type: 'getList',
-        payload: data,
-      });
+      if (data) {
+        yield put({
+          type: 'getList',
+          payload: data,
+        });
+      }
     },
     *edit({ payload: { id, values } }, { put, call }) {
       const data = yield call(editRecord, { id, values });
-      yield put({
-        type: 'getRemote',
-      });
+      if (data) {
+        message.success('Edit success');
+        yield put({
+          type: 'getRemote',
+        });
+      } else {
+        message.error('Edit failed');
+      }
     },
     *delete({ payload: { id } }, { put, call }) {
       const data = yield call(deleteRecored, { id });
-      yield put({
-        type: 'getRemote',
-      });
+      if (data) {
+        message.success('Delete success');
+        yield put({
+          type: 'getRemote',
+        });
+      } else {
+        message.error('Delete failed');
+      }
     },
     *add({ payload: { values } }, { put, call }) {
       const data = yield call(addRecored, { values });
-      yield put({
-        type: 'getRemote',
-      });
+      if (data) {
+        message.success('Add success');
+        yield put({
+          type: 'getRemote',
+        });
+      } else {
+        message.error('Add failed');
+      }
     },
   },
   subscriptions: {
