@@ -14,7 +14,7 @@ const errorHandler = function(error: any) {
     message.error('Network Error');
   }
 
-  // throw error; // If throw. The error will continue to be thrown.
+  throw error; // If throw. The error will continue to be thrown.
 
   // return {some: 'data'}; If return, return the value as a return. If you don't write it is equivalent to return undefined, you can judge whether the response has a value when processing the result.
   // return {some: 'data'};
