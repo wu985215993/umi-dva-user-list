@@ -2,10 +2,30 @@ import { message } from 'antd';
 import { Effect, Subscription } from 'dva';
 import { Reducer } from 'redux';
 import { deleteRecored, editRecord, getRemoteList, addRecored } from '../service';
+
+//每条用户数据的接口类型
+interface SingleUserType {
+  id: number;
+  name: string;
+  email: string;
+  create_time: string;
+  update_time: string;
+  status: number;
+}
+//后端返回数据的接口类型
+interface UserState {
+  data: SingleUserType[];
+  meta: {
+    total: number;
+    per_page: number;
+    page: number;
+  };
+}
+//用户model的接口类型
 interface UserModelType {
   namespace: 'users';
-  state: [];
-  reducers: { getList: Reducer };
+  state: UserState;
+  reducers: { getList: Reducer<UserState> };
   effects: {
     getRemote: Effect;
     edit: Effect;
@@ -18,7 +38,14 @@ interface UserModelType {
 }
 const UserModel: UserModelType = {
   namespace: 'users',
-  state: [],
+  state: {
+    data: [],
+    meta: {
+      total: 0,
+      per_page: 5,
+      page: 1,
+    },
+  },
   reducers: {
     getList(state, { payload }) {
       return payload;
